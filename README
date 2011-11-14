@@ -1,5 +1,4 @@
-Grooveshark Public API Wrapper
-==============================
+#Grooveshark Public API Wrapper
 
 This is a pretty simple wrapper for the grooveshark public api. To use it, you'll need an api key and secret pair. You can request this [on their developer site](http://developers.grooveshark.com/api).
 
