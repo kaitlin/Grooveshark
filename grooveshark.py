@@ -1,4 +1,3 @@
-
 import hashlib 
 import hmac
 import urllib2
@@ -68,7 +67,6 @@ def get_stream_key_stream_server(songID):
 
 def get_stream_from_query(query):
     ''' Get stream URL of the most popular song from query '''
-    init()
     results = get_song_search_results(query)
     song = results['result']['songs'][0]
     songID = song['SongID']
