@@ -24,6 +24,12 @@ To make api calls that require user authentication, call the authenticate_user m
 grooveshark.authenticate_user(username, password)
 ```  
 
+Get stream URL, artist, and title of the most popular song based on query:
+
+```
+grooveshark.get_stream_from_query('kanye west')
+```
+
 For more information on the grooveshark API methods and their required parameters, visit the [grooveshark documentation](http://developers.grooveshark.com/docs/public_api/v3/)
 
 
