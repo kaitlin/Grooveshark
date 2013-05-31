@@ -9,6 +9,7 @@ SECRET = '' #fill in with your secret
 API_URL = 'https://api.grooveshark.com/ws3.php?sig='
 global SESSION_ID
 SESSION_ID = ''
+country = {'ID': 221, 'CC1': 0, 'CC2': 0, 'CC3': 0, 'CC4': 0, 'DMA': 0, 'IPR': 0}
 
 def signature(data):
     sig = hmac.new(SECRET, data)
@@ -19,7 +20,6 @@ def user_token(username, password):
     return token.hexdigest()
 
 def api_call(method, parameters={}):
-    
     data = {}
     data['method'] = method
     data['parameters'] = parameters
@@ -35,13 +35,15 @@ def api_call(method, parameters={}):
     return simplejson.loads(response)
     
         
-def init():
-    #create session
+def init(key='', secret=''):
+    ''' Create session'''
+    if key and secret:
+        KEY = key
+        SECRET = secret
     response = api_call('startSession')    
     if response['result']['success'] == True:
         global SESSION_ID
         SESSION_ID = response['result']['sessionID']
-        
     else:
         raise APIError(simplejson.dumps(response['errors']))
         
@@ -53,13 +55,37 @@ def authenticate_user(username, password):
         token = user_token(username, password)
         response = api_call('authenticateUser', {'username': username.lower(), 'token': token})
         return response
-              
+
+def get_song_search_results(query, limit=10):
+    ''' Perform a song search '''
+    results = api_call('getSongSearchResults', {'query': query, 'country':country, 'limit': limit})
+    return results
+
+def get_stream_key_stream_server(songID):
+    ''' Get stream URL from songID '''
+    results = api_call('getStreamKeyStreamServer', {'songID': songID, 'country':country})
+    return results
+
+def get_stream_from_query(query):
+    ''' Get stream URL of the most popular song from query '''
+    init()
+    results = get_song_search_results(query)
+    song = results['result']['songs'][0]
+    songID = song['SongID']
+    artistName = song['ArtistName']
+    songName = song['SongName']
+    results = get_stream_key_stream_server(songID)
+    url = results['result']['url']
+    return url, artistName, songName
+
 class APIError(Exception):
     
     def __init__(self, value):
         self.message = value
     def __str__(self):
         return repr("There was a problem with your API request: " + self.message)
-        
-        
 
+
+# if __name__ == '__main__':
+#     url, artist, title = get_stream_from_query('kanye west')
+#     print url, artist, title
