@@ -69,7 +69,11 @@ def get_stream_key_stream_server(songID):
 def get_stream_from_query(query):
     ''' Get stream URL of the most popular song from query '''
     results = get_song_search_results(query)
-    song = results['result']['songs'][0]
+    songs = results['result']['songs']
+    if len(songs) == 0:
+        return None, None, None
+    
+    song = songs[0]
     songID = song['SongID']
     artistName = song['ArtistName']
     songName = song['SongName']
